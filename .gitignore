@@ -1,17 +1,29 @@
 # Python
 __pycache__/
 *.py[cod]
+*.pyo
 .pytest_cache/
+*.egg-info/
+dist/
+build/
 
 # Virtual environments
 .venv/
 venv/
+env/
 
 # OS/editor
 .DS_Store
 .idea/
 .vscode/
 .claude/
+
+# Python version file
+.python-version
+
+# Database files
+*.sqlite
+*.db
 
 # Local pipeline outputs
 workspace_local/ingesteddata/finaldata.csv
@@ -23,4 +35,6 @@ workspace_local/models/*.pdf
 workspace_local/production_deployment/*.pkl
 workspace_local/production_deployment/*.txt
 workspace_local/olddiagnostics/*
-submission_dinamic_risk_assessment_system.zip
+
+# Submission archives
+*.zip
