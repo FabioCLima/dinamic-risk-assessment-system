@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import List
 
-from dynamic_risk_assessment.config import load_config, repo_root, resolve_path
+from dynamic_risk_assessment.config import load_config, resolve_path
 
 logger = logging.getLogger(__name__)
 

@@ -1,7 +1,6 @@
 import argparse
 import logging
 from pathlib import Path
-from typing import Optional
 
 import matplotlib.pyplot as plt
 import pandas as pd
