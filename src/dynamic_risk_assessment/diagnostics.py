@@ -1,6 +1,7 @@
 import argparse
 import json
 import logging
+import os
 import pickle
 import subprocess
 import sys
@@ -59,8 +60,19 @@ def execution_time() -> List[float]:
     python_exe = sys.executable
 
     def _time_module(module_name: str) -> float:
+        root = repo_root()
+        src_path = str(root / "src")
+        existing = os.environ.get("PYTHONPATH", "")
+        pythonpath = src_path if not existing else f"{src_path}:{existing}"
         start = time.perf_counter()
-        subprocess.run([python_exe, "-m", module_name], check=True, capture_output=True, text=True)
+        subprocess.run(
+            [python_exe, "-m", module_name],
+            check=True,
+            capture_output=True,
+            text=True,
+            cwd=str(root),
+            env={**os.environ, "PYTHONPATH": pythonpath},
+        )
         return float(time.perf_counter() - start)
 
     return [

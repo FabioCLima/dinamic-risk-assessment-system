@@ -3,12 +3,13 @@ import logging
 import os
 import socket
 import subprocess
+import sys
 import time
 from pathlib import Path
 from typing import Optional, Set
 
 from dynamic_risk_assessment import apicalls, archive_diagnostics, deployment, ingestion, reporting, scoring, training
-from dynamic_risk_assessment.config import load_config, resolve_path
+from dynamic_risk_assessment.config import load_config, repo_root, resolve_path
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +45,8 @@ def _start_api_if_needed(host: str, port: int) -> Optional[subprocess.Popen]:
     if _is_port_open(host, port):
         return None
     process = subprocess.Popen(
-        ["python", "-m", "dynamic_risk_assessment.app"],
+        [sys.executable, "-m", "dynamic_risk_assessment.app"],
+        cwd=str(repo_root()),
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,
