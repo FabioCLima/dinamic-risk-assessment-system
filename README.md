@@ -1,5 +1,8 @@
 # Dynamic Risk Assessment System
 
+[![CI](https://github.com/FabioCLima/dinamic-risk-assessment-system/actions/workflows/ci.yml/badge.svg)](https://github.com/FabioCLima/dinamic-risk-assessment-system/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-3.9%2B-blue)
+
 An end-to-end MLOps project that predicts customer attrition risk and automates model monitoring and redeployment.
 
 This repository is structured to be readable by both:
@@ -122,7 +125,7 @@ DRAS_CONFIG=configs/config.dev.json dras run-all
 - [x] Model card and monitoring templates
 - [x] Root test scaffold and CI workflow
 - [x] Native `src/` implementation replacing `workspace_local/` scripts
-- [ ] Public GitHub repository setup and first release
+- [x] Public GitHub repository setup and first release
 
 ---
 
