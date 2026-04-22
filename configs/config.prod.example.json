@@ -1,0 +1,7 @@
+{
+  "input_folder_path": "data/raw",
+  "output_folder_path": "data/processed",
+  "test_data_path": "data/test",
+  "output_model_path": "artifacts/models",
+  "prod_deployment_path": "artifacts/production"
+}

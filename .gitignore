@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+
+# OS/editor
+.DS_Store
+.idea/
+.vscode/
+.claude/
+
+# Local pipeline outputs
+workspace_local/ingesteddata/finaldata.csv
+workspace_local/ingesteddata/ingestedfiles.txt
+workspace_local/models/*.pkl
+workspace_local/models/*.txt
+workspace_local/models/*.png
+workspace_local/models/*.pdf
+workspace_local/production_deployment/*.pkl
+workspace_local/production_deployment/*.txt
+workspace_local/olddiagnostics/*
+submission_dinamic_risk_assessment_system.zip

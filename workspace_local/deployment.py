@@ -1,0 +1,15 @@
+"""Legacy wrapper: forwards to portfolio-native module."""
+
+import sys
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+SRC_DIR = REPO_ROOT / "src"
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
+
+from dynamic_risk_assessment.deployment import main
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,109 @@
+Projeto: A Dynamic Risk Assessment System
+
+Vencido em 21 de abril de 2025Data de Submissão: 21 de abril de 2026
+
+## Resultados da Submissão
+
+Envio Não Aprovado
+
+Aprenda as melhores práticas para revisar e reenviar seu projeto.
+
+## Detalhes do Feedback
+
+2 especificações precisam de alterações
+
+### Nota do Revisor
+
+## Overall Summary
+
+Thank you for your submission. Your project reads as a coherent MLOps-style pipeline: configuration lives in `config.json`, ingestion through deployment are separated cleanly, and you clearly invested effort in diagnostics and API wiring. Much of the work already matches what this project is trying to teach.
+
+The main gap is in process automation: the rubric expects a clear story about when a model should replace the deployed model, and the submitted automation needs to line up with that intent. The sections below follow the rubric structure and focus on pass/fail using rubric-required conditions.
+
+## Next Steps
+
+Tighten the “new model is better than deployed” decision in `fullprocess.py` and reuse that same decision as the only deployment gate when new data is present. Once those conditions are explicit, the remaining automation rubric items should be much closer to pass.
+
+If you want extra context while refining the automation flow, these Udacity Knowledge discussions are useful references for common confusion around drift behavior, second-run artifacts, and execution order: [No Model Drift(opens in a new tab)](https://knowledge.udacity.com/questions/760890), [confusionmatrix2.png and apireturns2.txt(opens in a new tab)](https://knowledge.udacity.com/questions/734547), and [Should I run all my scripts with the config.json changed?(opens in a new tab)](https://knowledge.udacity.com/questions/717428). These links are best used as implementation guidance, while the final grading decision should still follow the rubric requirements directly.
+
+## Helpful Resources
+
+**MLOps Foundations & Best Practices:**
+
+- [MLOps Principles(opens in a new tab)](https://ml-ops.org/content/mlops-principles) - Comprehensive guide to MLOps principles, covering deployment services, orchestration, logging, and monitoring practices
+- [Practitioners Guide to MLOps (Google Cloud)(opens in a new tab)](https://services.google.com/fh/files/misc/practitioners_guide_to_mlops_whitepaper.pdf) - Official Google whitepaper covering the complete MLOps framework, continuous training pipelines, model deployment, and monitoring
+
+**CI/CD for Machine Learning:**
+
+- [Continuous Integration and Continuous Deployment (CI/CD) in MLOps(opens in a new tab)](https://www.geeksforgeeks.org/machine-learning/continuous-integration-and-continuous-deployment-ci-cd-in-mlops/) - Detailed explanation of CI/CD practices including data validation, model training automation, deployment strategies (blue-green, canary, shadow deployment)
+
+**Model Monitoring & Drift Detection:**
+
+- [MLOps Best Practices: From Model Deployment to Monitoring(opens in a new tab)](https://codingcops.com/mlops-best-practices-from-model-deployment-to-monitoring/) - Covers monitoring frameworks, observability tools, feedback loops, and version control for ML systems
+- [Model Drift in Machine Learning(opens in a new tab)](https://aerospike.com/blog/model-drift-machine-learning/) - Explains model drift concepts and retraining strategies with fresh data
+
+**Data Validation:**
+
+- [Two Approaches for Data Validation in ML Production(opens in a new tab)](https://blog.fastforwardlabs.com/2019/08/28/two-approaches-for-data-validation-in-ml-production.html) - Technical deep dive on schema-based data validation and automated data quality checks in production ML systems
+
+### Data Ingestion
+
+### Training, Scoring, and Deployment
+
+### Diagnostics
+
+### Reporting
+
+### Process Automation
+Your cron schedule uses a ten-minute cadence, which matches the scheduling requirement. The remaining rubric-critical issue is deployment gating logic: fullprocess.py should call deployment only when both conditions are true, meaning new data is present and model drift is detected according to the 5.1 “better model” criterion. If drift is currently treated as any score difference (instead of a better new model), deployment can run in cases that do not satisfy the intended condition.
+
+To make this pass by rubric rules, keep the gate explicit and tied to the same decision used in 5.1:
+
+if len(new_files) == 0:
+    return
+
+ingestion.merge_multiple_dataframe()
+training.train_model()
+candidate_score = scoring.score_model()
+deployed_score = read_deployed_score()
+
+is_better_model = (deployed_score is None) or (candidate_score > deployed_score)
+if is_better_model:
+    deployment.store_model_into_pickle()
+
+    In deployment.py, copy the model from its initial location to the final production deployment directory. The initial location is specified in the output_folder_path of config.json. The production deployment directory is specified in the prod_deployment_path of config.json.
+    Students need to set up a cron job that regularly runs fullprocess.py.
+    The fullprocess.py script should call the deployment.py script only under certain conditions: when there is new data ingested, AND when there is model drift.
+    Nota do Revisor
+
+This is where the project needs the clearest decision rule. The rubric language points toward comparing model quality using F1, with “better” meaning a higher score than what is currently deployed. In practice, the easiest fix is to make fullprocess.py follow this exact sequence: check for new files and exit immediately if none are found, ingest and train a candidate model only when new files exist, score that candidate model, read the deployed baseline score from production_deployment/latestscore.txt, and then deploy only when candidate_score > deployed_score. If no deployed score exists yet, treat that as an initial deployment case and allow deployment once.
+
+# 1) Stop early if no new data
+if len(new_files) == 0:
+    print("No new data found. Process ends here.")
+    return
+
+# 2) Build candidate model from new data
+ingestion.merge_multiple_dataframe()
+training.train_model()
+candidate_score = scoring.score_model()
+
+# 3) Compare with deployed baseline
+deployed_score = read_deployed_score()  # from production_deployment/latestscore.txt
+if deployed_score is None:
+    should_deploy = True   # first deployment case
+else:
+    should_deploy = candidate_score > deployed_score
+
+# 4) Deploy only when improvement is confirmed
+if should_deploy:
+    deployment.store_model_into_pickle()
+
+This makes the pass/fail condition observable and avoids accidental redeployments when the candidate model is equal to or worse than the deployed one.
+
+    The fullprocess.py script will perform this section.
+    Check for the presence of non-ingested data in the /sourcedata/ folder
+    Check for whether the most recent model performs better than the previously deployed model
+
+"According to the project instructions, you should already deploy one model before writing your fullprocess.py. Once your fullprocess.py is complete, you are required to change some parameters
+ in config.json before running your full process through cron. "

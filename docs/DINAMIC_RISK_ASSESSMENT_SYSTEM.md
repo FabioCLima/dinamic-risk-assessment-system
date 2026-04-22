@@ -1,0 +1,191 @@
+# Dynamic Risk Assessment System — Submission
+
+Final submission for the Udacity **Dynamic Risk Assessment System** project. The
+package here is self-contained: every script, artifact, and helper the rubric
+asks for is in this folder.
+
+---
+
+## 1. What this project does
+
+Builds a batch MLOps pipeline that:
+
+1. **Ingests** CSV files from a configurable source folder, deduplicates them, and
+   produces a master training dataset.
+2. **Trains** a logistic-regression attrition-risk model, **scores** it with F1 on
+   a held-out test set, and **deploys** the artifacts (model + score + ingestion
+   record) to a production folder.
+3. Runs **diagnostics**: descriptive stats (mean / median / mode), missing-data
+   percentages, script timings, and dependency-version checks.
+4. Exposes a **Flask API** with four endpoints (`/prediction`, `/scoring`,
+   `/summarystats`, `/diagnostics`) and a client (`apicalls.py`) that stores the
+   combined response in `apireturns.txt`.
+5. Automates everything through `fullprocess.py`, which detects new data, detects
+   model drift, and re-deploys when appropriate. A cron job runs this orchestrator
+   every 10 minutes.
+
+---
+
+## 2. Required files (rubric checklist)
+
+| Category | File | Purpose |
+|---|---|---|
+| Scripts | `ingestion.py` | Step 1 — auto-discover + merge + dedupe CSVs |
+| Scripts | `training.py` | Step 2 — train LogisticRegression, save `trainedmodel.pkl` |
+| Scripts | `scoring.py` | Step 2 — F1 score, writes `latestscore.txt` |
+| Scripts | `deployment.py` | Step 2 — copy the 3 artifacts to production |
+| Scripts | `diagnostics.py` | Step 3 — predictions / stats / NA % / timing / deps |
+| Scripts | `reporting.py` | Step 4 — confusion matrix PNG + optional PDF |
+| Scripts | `app.py` | Step 4 — Flask API (factory pattern) |
+| Scripts | `apicalls.py` | Step 4 — call all endpoints, save `apireturns.txt` |
+| Scripts | `fullprocess.py` | Step 5 — end-to-end orchestration |
+| Artifact | `finaldata.csv` | Step 1 output: merged deduplicated data |
+| Artifact | `ingestedfiles.txt` | Step 1 output: list of CSVs read |
+| Artifact | `trainedmodel.pkl` | Step 2 output: pickled LogisticRegression |
+| Artifact | `latestscore.txt` | Step 2 output: F1 score (single float) |
+| Artifact | `confusionmatrix.png` | Step 4 output: initial confusion matrix |
+| Artifact | `confusionmatrix2.png` | Step 5 output: post-redeploy confusion matrix |
+| Artifact | `apireturns.txt` | Step 4 output: combined API responses |
+| Artifact | `apireturns2.txt` | Step 5 output: combined API responses (post-redeploy) |
+| Cron | `cronjob.txt` | The single-line crontab entry |
+| Config | `config.json` | Paths switchboard (no hard-coded paths in code) |
+| Config | `requirements.txt` | Pinned dependency versions |
+| Helper | `wsgi.py` | Production API entry (`gunicorn wsgi:app`) |
+
+---
+
+## 3. `config.json`
+
+```json
+{
+  "input_folder_path": "sourcedata",
+  "output_folder_path": "ingesteddata",
+  "test_data_path": "testdata",
+  "output_model_path": "models",
+  "prod_deployment_path": "production_deployment"
+}
+```
+
+To run the pipeline in **practice** mode, switch to
+`"input_folder_path": "practicedata"` and `"output_model_path": "practicemodels"`.
+
+---
+
+## 4. How to run locally
+
+```bash
+# 1. env
+python3.9 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+
+# 2. pipeline (each step is idempotent)
+python ingestion.py
+python training.py
+python scoring.py
+python deployment.py
+python reporting.py
+APP_PORT=8765 python apicalls.py      # spawns app.py locally if not running
+APP_PORT=8765 python fullprocess.py   # re-ingest + drift check + redeploy
+```
+
+Port note: if `8000` is busy on the host, set `APP_PORT=<free>` before running
+`apicalls.py` / `fullprocess.py`.
+
+---
+
+## 5. Cron job
+
+`cronjob.txt`:
+
+```
+*/10 * * * * cd /home/workspace && /usr/bin/python3 /home/workspace/fullprocess.py
+```
+
+Install with:
+
+```bash
+crontab cronjob.txt
+```
+
+Adjust the path to wherever the project is deployed.
+
+---
+
+## 6. API endpoints
+
+| Method | Path | Returns | HTTP |
+|---|---|---|---|
+| POST | `/prediction` (JSON body `{"filepath": "..."}`) | `{"predictions": [...]}` | 200 |
+| GET | `/scoring` | `{"f1_score": <float>}` | 200 |
+| GET | `/summarystats` | `{"summary_statistics": [...]}` | 200 |
+| GET | `/diagnostics` | `{"timing_seconds": [...], "missing_data_percent": [...], "dependencies": [...]}` | 200 |
+
+All endpoints return HTTP 200, including error bodies (per the spec).
+
+---
+
+## 7. CLI flags (argparse)
+
+Every entry point accepts `--help`. Most-used flags:
+
+- `app.py --host 127.0.0.1 --port 8765 [--debug]`
+- `apicalls.py --port 8765 --prediction-input testdata/testdata.csv --output apireturns.txt`
+- `fullprocess.py --force --no-archive`
+- `reporting.py --output confusionmatrix.png --pdf [report.pdf]`
+- `diagnostics.py --skip-timing --skip-deps`
+
+---
+
+## 8. Standout suggestions (implemented)
+
+Included under `standout/`:
+
+- **PDF report** (`standout/report.pdf`) — generated by `reporting.py --pdf`.
+  Bundles the confusion matrix, F1 score, mean/median/mode table, NA %,
+  ingested files, and dependency versions in a single PDF. Uses `reportlab`.
+- **Time-trend archive** (`standout/olddiagnostics/`) — every `fullprocess.py`
+  run copies the current diagnostic artifacts into `olddiagnostics/` with a UTC
+  timestamp suffix. Source: `archive_diagnostics.py`.
+- **SQLite history** (`standout/pipeline_history.sqlite`) — each run persists a
+  record to three tables: `ingestion_runs`, `model_scores`, `diagnostics_runs`.
+  Source: `dbsetup.py`, wired into `ingestion.py`, `scoring.py`, `diagnostics.py`.
+
+---
+
+## 9. Rubric compliance (self-audit)
+
+| Rubric section | Criterion | Status |
+|---|---|---|
+| 1. Data Ingestion | Auto-read all CSVs, dedup, write `finaldata.csv` + `ingestedfiles.txt` | ✅ |
+| 2. Train/Score/Deploy | Pickle model, write F1 to `latestscore.txt`, copy 3 artifacts | ✅ |
+| 3. Diagnostics | Timing, NA %, dependency check, mean/median/mode, deployed-model predictions | ✅ |
+| 4. Reporting | 4 endpoints, confusion matrix PNG, combined `apireturns.txt` | ✅ |
+| 5. Process Automation | New-data + drift check, redeploy, cron every 10 min | ✅ |
+| Standout | PDF report, time-trend archive, SQL DB | ✅ |
+
+**Note on mean/median/mode**: the English step spec says "standard deviation"
+while the Portuguese `rubrica.md` says "moda" (mode). The submission follows the
+rubric — `dataframe_summary()` returns mean/median/mode.
+
+---
+
+## 10. Testing
+
+The working copy includes a `pytest` suite under `workspace_local/tests/`
+(39 tests, ~1.9s) exercising every step. The submission folder contains the
+final artifacts those tests certified.
+
+---
+
+## 11. Files not required by the rubric but included for reviewers
+
+- `wsgi.py` — `from app import create_app; app = create_app()`, for
+  `gunicorn wsgi:app` deployment.
+- `config.json`, `requirements.txt` — needed to actually run the scripts.
+- `standout/` — the three standout implementations.
+
+---
+
+Generated on the final pipeline run:
+- F1 score on test set: see `latestscore.txt`
+- Ingested files: see `ingestedfiles.txt`

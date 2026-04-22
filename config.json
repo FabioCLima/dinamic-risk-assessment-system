@@ -1,0 +1,7 @@
+{
+  "input_folder_path": "workspace_local/sourcedata",
+  "output_folder_path": "workspace_local/ingesteddata",
+  "test_data_path": "workspace_local/testdata",
+  "output_model_path": "workspace_local/models",
+  "prod_deployment_path": "workspace_local/production_deployment"
+}

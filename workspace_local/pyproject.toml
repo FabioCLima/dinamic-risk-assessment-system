@@ -1,0 +1,13 @@
+[project]
+name = "workspace-local"
+version = "0.1.0"
+description = "Dynamic Risk Assessment System — Udacity MLOps project"
+readme = "README.md"
+requires-python = ">=3.9,<3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7,<9",
+    "pytest-cov>=4,<8",
+]
