@@ -42,11 +42,8 @@ line-length = 120
 target-version = "py39"
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I"]
+select = ["E", "F", "W"]
 ignore = ["E501"]
-
-[tool.ruff.lint.isort]
-known-first-party = ["dynamic_risk_assessment", "portfolio_pipeline"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
