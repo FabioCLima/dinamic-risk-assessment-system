@@ -45,5 +45,8 @@ target-version = "py39"
 select = ["E", "F", "W", "I"]
 ignore = ["E501"]
 
+[tool.ruff.lint.isort]
+known-first-party = ["dynamic_risk_assessment", "portfolio_pipeline"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
