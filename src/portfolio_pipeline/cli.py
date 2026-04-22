@@ -4,6 +4,7 @@ import argparse
 import os
 import subprocess
 import sys
+
 from dynamic_risk_assessment.config import repo_root
 
 

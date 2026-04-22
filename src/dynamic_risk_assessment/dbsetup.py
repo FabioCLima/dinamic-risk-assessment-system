@@ -5,7 +5,7 @@ import sqlite3
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, Sequence
 
-from dynamic_risk_assessment.config import load_config, repo_root, resolve_path
+from dynamic_risk_assessment.config import load_config, resolve_path
 
 logger = logging.getLogger(__name__)
 DEFAULT_DB_NAME = "pipeline_history.sqlite"
