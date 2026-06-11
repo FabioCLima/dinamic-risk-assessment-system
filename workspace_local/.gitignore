@@ -1,9 +1,0 @@
-.venv/
-__pycache__/
-*.pyc
-.pytest_cache/
-.DS_Store
-
-# Outputs (keep if you prefer versioning outputs)
-ingesteddata/finaldata.csv
-ingesteddata/ingestedfiles.txt
