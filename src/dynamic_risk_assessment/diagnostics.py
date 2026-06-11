@@ -82,7 +82,7 @@ def execution_time() -> List[float]:
 
 
 def outdated_packages_list() -> List[Dict[str, Any]]:
-    requirements_path = repo_root() / "workspace_local" / "requirements.txt"
+    requirements_path = repo_root() / "workspace" / "requirements.txt"
     if not requirements_path.exists():
         raise FileNotFoundError(f"requirements.txt not found at {requirements_path}")
 

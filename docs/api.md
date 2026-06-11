@@ -1,6 +1,6 @@
 # API Overview
 
-The runtime API is served by `workspace_local/app.py` and currently exposes four endpoints:
+The runtime API is served by `workspace/app.py` and currently exposes four endpoints:
 
 - `POST /prediction`
   - Input JSON: `{"filepath": "testdata/testdata.csv"}`

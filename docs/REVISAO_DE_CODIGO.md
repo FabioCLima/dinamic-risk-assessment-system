@@ -466,7 +466,7 @@ return float(time.perf_counter() - start)
 ### 8.5 Por que `sys.executable` e não `"python"`
 
 ```python
-python_exe = sys.executable  # ex: /home/.../workspace_local/.venv/bin/python
+python_exe = sys.executable  # ex: /home/.../workspace/.venv/bin/python
 subprocess.run([python_exe, script_name], ...)
 ```
 

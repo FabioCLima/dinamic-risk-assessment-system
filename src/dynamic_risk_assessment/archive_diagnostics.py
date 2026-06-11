@@ -14,7 +14,7 @@ def _timestamp() -> str:
     return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
 
-def archive_current_diagnostics(archive_dirname: str = "workspace_local/olddiagnostics") -> List[Path]:
+def archive_current_diagnostics(archive_dirname: str = "workspace/olddiagnostics") -> List[Path]:
     config = load_config()
     archive_dir = resolve_path(archive_dirname)
     archive_dir.mkdir(parents=True, exist_ok=True)
@@ -43,7 +43,7 @@ def archive_current_diagnostics(archive_dirname: str = "workspace_local/olddiagn
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     parser = argparse.ArgumentParser(description="Archive current diagnostics with a UTC timestamp.")
-    parser.add_argument("--archive-dir", default="workspace_local/olddiagnostics")
+    parser.add_argument("--archive-dir", default="workspace/olddiagnostics")
     args = parser.parse_args()
     archive_current_diagnostics(archive_dirname=args.archive_dir)
 

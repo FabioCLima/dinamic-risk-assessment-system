@@ -19,9 +19,9 @@ Pilares do design:
 
 ---
 
-## 2) Estrutura de pastas (workspace_local)
+## 2) Estrutura de pastas (workspace)
 
-A pasta `workspace_local/` é um “workspace” local espelhando o starter da Udacity, com os scripts e diretórios esperados:
+A pasta `workspace/` é um “workspace” local espelhando o starter da Udacity, com os scripts e diretórios esperados:
 
 - `config.json`: define onde ler/gravar dados, modelos e deploy.
 - `sourcedata/`: dados “reais” de treino (no modo final do projeto).
@@ -50,7 +50,7 @@ Decisão: alternar “practice” (`practicedata/`, `practicemodels/`) para “f
 
 ## 4) Ambiente Python (reprodutibilidade)
 
-O ambiente do projeto é gerenciado com `uv` em `workspace_local/.venv`:
+O ambiente do projeto é gerenciado com `uv` em `workspace/.venv`:
 - Usamos **Python 3.9.x** para compatibilidade com as versões fixas em `requirements.txt` (pinned e antigas).
 - Instalamos dependências com `uv pip install -r requirements.txt`.
 

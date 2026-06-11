@@ -7,7 +7,7 @@ from dynamic_risk_assessment.config import repo_root
 def test_repo_root_points_to_project_root() -> None:
     root = repo_root()
     assert (root / "README.md").exists()
-    assert (root / "workspace_local").exists()
+    assert (root / "workspace").exists()
 
 
 def test_pipeline_modules_are_configured() -> None:

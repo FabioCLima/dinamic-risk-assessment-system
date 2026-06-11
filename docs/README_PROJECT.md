@@ -8,7 +8,7 @@ Projeto de MLOps da Udacity para criar um pipeline completo de:
 - diagnósticos e reporting
 - automação por cron
 
-Este diretório contém o `workspace_local/`, a cópia de trabalho usada para desenvolver, testar e validar o projeto antes de levar para o ambiente da Udacity.
+Este diretório contém o `workspace/`, a cópia de trabalho usada para desenvolver, testar e validar o projeto antes de levar para o ambiente da Udacity.
 
 ## Visão geral
 
@@ -82,7 +82,7 @@ O fluxo principal é:
 ### 1. Criar e preparar o ambiente
 
 ```bash
-cd /home/fabiolima/Desktop/MLOps_Projects/Dinamic_Risk_Assessment_System/workspace_local
+cd /home/fabiolima/Desktop/MLOps_Projects/Dinamic_Risk_Assessment_System/workspace
 uv venv -c --seed --python 3.9 .venv
 uv pip install --python .venv/bin/python -r requirements.txt
 ```
@@ -200,7 +200,7 @@ O endpoint `/prediction` recebe um JSON com o caminho do arquivo de entrada, por
 ## Observações importantes
 
 - O projeto usa `config.json` para manter os caminhos centralizados.
-- O fluxo foi desenhado para funcionar no `workspace_local/` e também no ambiente da Udacity.
+- O fluxo foi desenhado para funcionar no `workspace/` e também no ambiente da Udacity.
 - Os scripts suportam CLIs com `argparse`, preservando os valores padrão quando nenhum argumento é passado.
 - Os artefatos opcionais de standout foram adicionados para enriquecer a entrega, mas não são obrigatórios na rubrica base.
 

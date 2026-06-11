@@ -171,7 +171,7 @@ rubric — `dataframe_summary()` returns mean/median/mode.
 
 ## 10. Testing
 
-The working copy includes a `pytest` suite under `workspace_local/tests/`
+The working copy includes a `pytest` suite under `workspace/tests/`
 (39 tests, ~1.9s) exercising every step. The submission folder contains the
 final artifacts those tests certified.
 

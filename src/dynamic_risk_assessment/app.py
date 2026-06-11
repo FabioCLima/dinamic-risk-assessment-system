@@ -25,7 +25,7 @@ def create_app() -> Flask:
             return jsonify({"error": "Missing required JSON field: filepath"}), 200
         csv_path = Path(str(filepath))
         if not csv_path.is_absolute():
-            csv_path = repo_root() / "workspace_local" / csv_path
+            csv_path = repo_root() / "workspace" / csv_path
         if not csv_path.exists():
             return jsonify({"error": f"File not found: {csv_path}"}), 200
         return jsonify({"predictions": diagnostics.model_predictions(pd.read_csv(csv_path))}), 200

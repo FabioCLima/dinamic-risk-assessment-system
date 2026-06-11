@@ -37,10 +37,10 @@ Use this sequence when creating your public repository so the history is clean a
 ## Commit 4: Legacy compatibility wrappers
 
 **Message**
-`refactor: convert workspace_local scripts into legacy wrappers`
+`refactor: convert workspace scripts into legacy wrappers`
 
 **Include**
-- `workspace_local/*.py` wrappers forwarding to `src` modules
+- `workspace/*.py` wrappers forwarding to `src` modules
 
 ## Commit 5: Testing and CI
 

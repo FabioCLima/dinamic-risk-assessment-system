@@ -43,4 +43,4 @@ flowchart TD
 
 ## Evolution path
 
-This repository keeps the validated Udacity-compatible implementation in `workspace_local/`, while introducing root-level portfolio scaffolding (`src/`, `configs/`, `reports/`) for a clean public version.
+This repository keeps the validated Udacity-compatible implementation in `workspace/`, while introducing root-level portfolio scaffolding (`src/`, `configs/`, `reports/`) for a clean public version.
